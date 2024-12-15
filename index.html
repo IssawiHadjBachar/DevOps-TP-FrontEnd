@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détection de Langue</title>
+</head>
+<body>
+    <h1>Détection de Langue</h1>
+    <!-- Input textarea -->
+    <textarea id="textInput" placeholder="Entrez le texte ici"></textarea>
+    <br>
+    <!-- Button for detecting language -->
+    <button onclick="startLanguageDetection()">Détecter la langue</button>
+    <p id="result"></p>
+
+    <script>
+        function startLanguageDetection() {
+            // Retrieve user input
+            const text = document.getElementById("textInput").value;
+
+            // Send the text to the backend (port 6001)
+            fetch('http://127.0.0.1:5000/detect', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text }) // Send text as JSON
+            })
+            .then(response => response.json()) // Parse the response as JSON
+            .then(data => {
+                // Display the result
+                if (data.language) {
+                    document.getElementById("result").textContent = "Langue détectée: " + data.language;
+                } else {
+                    document.getElementById("result").textContent = "Erreur: " + data.error;
+                }
+            })
+            .catch(error => {
+                // Handle errors
+                document.getElementById("result").textContent = "Erreur: " + error.message;
+            });
+        }
+    </script>
+</body>
+</html>
